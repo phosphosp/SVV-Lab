@@ -1,13 +1,20 @@
+using Moq;
 namespace ICT3101_Calculator.UnitTests
 {
     public class CalculatorTests
     {
         private Calculator _calculator;
+        private Mock<IFileReader> _mockFileReader;
 
         [SetUp]
         public void Setup()
         {
             // Arrange 
+            _calculator = new Calculator();
+
+            _mockFileReader = new Mock<IFileReader>();
+            _mockFileReader.Setup(fr =>
+                fr.Read(@"C:\Users\phosg\SVV Labs\Lab1\Lab1\MagicNumbers.txt")).Returns(new string[2] { "42", "42" });
             _calculator = new Calculator();
         }
 
@@ -218,6 +225,70 @@ namespace ICT3101_Calculator.UnitTests
             // Act         
             // Assert 
             Assert.That(() => _calculator.UnknownFunctionB(4, 5), Throws.ArgumentException);
+        }
+
+        [Test]
+        public void GenMagicNum_WithValidIndex0_PositiveValue()
+        {
+            // MagicNumbers[0] = 10 -> doubled to 20
+            IFileReader fileReader = new FileReader();
+            double result = _calculator.GenMagicNum(0, fileReader);
+            Assert.That(result, Is.EqualTo(20));
+        }
+
+        [Test]
+        public void GenMagicNum_WithValidIndex1_NegativeValue()
+        {
+            // MagicNumbers[1] = -5 -> doubled to -10 -> converted to positive 10
+            IFileReader fileReader = new FileReader();
+            double result = _calculator.GenMagicNum(1, fileReader);
+            Assert.That(result, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void GenMagicNum_WithOutOfRangeIndex_ReturnsZero()
+        {
+            // If index >= file length, no assignment -> result remains 0 -> converted to 0
+            IFileReader fileReader = new FileReader();
+            double result = _calculator.GenMagicNum(99, fileReader);
+            Assert.That(result, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void GenMagicNum_WithNonIntegerInput_RoundsDown()
+        {
+            // Input 2.4 -> choice = 2 -> MagicNumbers[2] = 42 -> doubled = 84
+            IFileReader fileReader = new FileReader();
+            double result = _calculator.GenMagicNum(2.4, fileReader);
+            Assert.That(result, Is.EqualTo(84));
+        }
+
+        [Test]
+        public void GenMagicNum_WithValidIndex0_UsingMock_Returns84()
+        {
+            double result = _calculator.GenMagicNum(0, _mockFileReader.Object);
+            Assert.That(result, Is.EqualTo(84));
+        }
+
+        [Test]
+        public void GenMagicNum_WithValidIndex1_UsingMock_Returns84()
+        {
+            double result = _calculator.GenMagicNum(1, _mockFileReader.Object);
+            Assert.That(result, Is.EqualTo(84));
+        }
+
+        [Test]
+        public void GenMagicNum_WithOutOfRangeIndex_UsingMock_Returns0()
+        {
+            double result = _calculator.GenMagicNum(99, _mockFileReader.Object);
+            Assert.That(result, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void GenMagicNum_WithNonIntegerInput_UsingMock_Returns84()
+        {
+            double result = _calculator.GenMagicNum(1.4, _mockFileReader.Object);
+            Assert.That(result, Is.EqualTo(84));
         }
     }
 }

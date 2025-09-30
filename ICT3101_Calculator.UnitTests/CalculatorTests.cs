@@ -14,7 +14,7 @@ namespace ICT3101_Calculator.UnitTests
 
             _mockFileReader = new Mock<IFileReader>();
             _mockFileReader.Setup(fr =>
-                fr.Read(@"C:\Users\phosg\SVV Labs\Lab1\Lab1\MagicNumbers.txt")).Returns(new string[2] { "42", "42" });
+                fr.Read("MagicNumbers.txt")).Returns(new string[2] { "42", "42" });
             _calculator = new Calculator();
         }
 

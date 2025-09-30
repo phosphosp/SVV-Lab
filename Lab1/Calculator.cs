@@ -276,7 +276,7 @@
         //Dependency------------------------------ 
         // FileReader getTheMagic = new FileReader();
         //---------------------------------------- 
-        string[] magicStrings = fileReader.Read(@"C:\Users\phosg\SVV Labs\Lab1\Lab1\MagicNumbers.txt");
+        string[] magicStrings = fileReader.Read("MagicNumbers.txt");
 
         if ((choice >= 0) && (choice < magicStrings.Length))
         {
